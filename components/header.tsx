@@ -4,13 +4,18 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { Menu, X } from 'lucide-react';
+import { useState } from 'react';
 
 export function Header() {
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isActive = (href: string) => {
     return pathname === href ? 'text-primary font-semibold' : 'text-foreground hover:text-primary';
   };
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -58,8 +63,72 @@ export function Header() {
           >
             <Link href="/appointment">Book Now</Link>
           </Button>
+          
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </Button>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-border bg-background">
+          <nav className="container mx-auto px-4 py-4 flex flex-col gap-4">
+            <Link
+              href="/"
+              className={`text-sm transition-colors py-2 ${isActive('/')}`}
+              onClick={closeMobileMenu}
+            >
+              Home
+            </Link>
+            <Link
+              href="/services"
+              className={`text-sm transition-colors py-2 ${isActive('/services')}`}
+              onClick={closeMobileMenu}
+            >
+              Services
+            </Link>
+            <Link
+              href="/products"
+              className={`text-sm transition-colors py-2 ${isActive('/products')}`}
+              onClick={closeMobileMenu}
+            >
+              Products
+            </Link>
+            <Link
+              href="/about"
+              className={`text-sm transition-colors py-2 ${isActive('/about')}`}
+              onClick={closeMobileMenu}
+            >
+              About
+            </Link>
+            <Link
+              href="/faq"
+              className={`text-sm transition-colors py-2 ${isActive('/faq')}`}
+              onClick={closeMobileMenu}
+            >
+              FAQ
+            </Link>
+            <div className="pt-2 border-t border-border sm:hidden">
+              <Button
+                asChild
+                variant="outline"
+                className="w-full bg-transparent mb-2"
+                onClick={closeMobileMenu}
+              >
+                <Link href="/login">Sign In</Link>
+              </Button>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
